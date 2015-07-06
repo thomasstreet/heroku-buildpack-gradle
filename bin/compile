@@ -36,6 +36,12 @@ if [ ! -d $CACHE_DIR ] ; then
   mkdir $CACHE_DIR
 fi
 
+# unpack cache
+CACHED_DIRS="node_modules"
+for DIR in $CACHED_DIRS; do
+  cache_copy $DIR $CACHE_DIR $BUILD_DIR
+done
+
 export GRADLE_USER_HOME=$CACHE_DIR/.gradle
 
 if [ ! -f $BUILD_DIR/gradlew ] ; then
@@ -63,3 +69,10 @@ if [ "${PIPESTATUS[*]}" != "0 0" ]; then
   echo " !     Failed to build app"
   exit 1
 fi
+
+# repack cache
+mkdir -p $CACHE_DIR
+for DIR in $CACHED_DIRS; do
+  cache_copy $DIR $BUILD_DIR $CACHE_DIR
+done
+
